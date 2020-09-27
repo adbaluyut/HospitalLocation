@@ -1,4 +1,5 @@
 
+import math
 
 # rows = int(input("Input number of rows:\n"))
 # columns = int(input("Input number of columns:\n"))
@@ -11,6 +12,8 @@ hospital = 'H'
 
 def main():
 	board = initBoard(rows,columns)    
+
+	# Loop to randomly put these locations
 	# initial locations for hospitals
 	insertLocation(0,4,board,hospital) # H for hospitals
 	insertLocation(3,9,board,hospital)
@@ -18,8 +21,10 @@ def main():
 	insertLocation(3,1,board,home)
 	insertLocation(0,8,board,home)
 	insertLocation(4,6,board,home)
+
 	drawBoard(rows, columns, board)
 	hcrr(rows,columns,board,3)
+	# manhattan(board)
 
 def initBoard(rows,columns):
 	board = []
@@ -40,9 +45,22 @@ def drawBoard(r,c,b):
 	print()
 
 def manhattan(state):
-	homeLoc = findIndex(rows,columns,hospital,state)
-	total = 0
-	return total
+	distances = []
+	homeLoc = findIndex(rows,columns,home,state)
+	hospitalLoc = findIndex(rows,columns,hospital,state)
+	# print(homeLoc)
+	# print(hospitalLoc)
+	
+	for r,c in homeLoc:
+		localDist = math.inf
+		for y,x in hospitalLoc:
+			dist = abs(r - y) + abs(c - x)
+			if dist < localDist:
+				localDist = dist
+		distances.append(localDist)
+	# print(distances)
+	# print(f"sum = {sum(distances)}")
+	return sum(distances)
 	 
 # return a list of tuples containing the coordinates of the targets
 def findIndex(r, c, target, state):
@@ -59,7 +77,6 @@ def up(r, c, board):
 		for li in board:
 			arr.append(list(li))
 
-		print(r)
 		if r > 0:
 			arr[r][c], arr[r-1][c] = arr[r-1][c], arr[r][c]
 			return arr
@@ -70,7 +87,6 @@ def down(r, c, board):
 		for li in board:
 			arr.append(list(li))
 			
-		print(r)
 		if r < rows-1:
 			arr[r][c], arr[r+1][c] = arr[r+1][c], arr[r][c]
 			return arr
@@ -81,7 +97,6 @@ def left(r, c, board):
 		for li in board:
 			arr.append(list(li))
 			
-		print(c)
 		if c > 0:
 			arr[r][c], arr[r][c-1] = arr[r][c-1], arr[r][c]
 			return arr
@@ -92,18 +107,18 @@ def right(r, c, board):
 		for li in board:
 			arr.append(list(li))
 			
-		print(c)
 		if c < columns-1:
 			arr[r][c], arr[r][c+1] = arr[r][c+1], arr[r][c]
 			return arr
 
+# Find the possible next states and return a list of those states
 def possibleStates(board):
 	nextStates = []
 	hospitalLoc = findIndex(rows,columns,hospital,board)
 	print(hospitalLoc)
 	# At each hospital location get the next possible moves
 	for r,c in hospitalLoc:
-		print(f"{board[r][c]} at ({r},{c})")
+		# print(f"{board[r][c]} at ({r},{c})")
 		nextStates.append(up(r,c,board))
 		nextStates.append(down(r,c,board))
 		nextStates.append(left(r,c,board))
@@ -113,17 +128,25 @@ def possibleStates(board):
 
 # Hill CLimbing with Random Restart
 def hcrr(rows,columns,board,numRestart):
+	min = math.inf # global maximum
+	manhDist = []
 	# copy the state
 	current = []
 	for li in board:
 		current.append(list(li))
 	restart = 0
 
-	nextStates = possibleStates(board)
-	for li in nextStates:
-		drawBoard(rows,columns,li)
+	while(True):
+		localMin = math.inf
+		nextStates = possibleStates(board)
+		for li in nextStates:
+			manhDist.append(manhattan(li))
+			drawBoard(rows,columns,li)
+		print(manhDist)
 
-	
+		# if there is no minimum value lower than global min break
+
+		break
 
 if __name__ == "__main__":
 	main()
