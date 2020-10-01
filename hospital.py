@@ -15,8 +15,9 @@ def main():
 
 	# Loop to randomly put these locations
 	# initial locations for hospitals
-	insertLocation(0,4,board,hospital) # H for hospitals
+	# insertLocation(0,4,board,hospital) # H for hospitals
 	insertLocation(3,9,board,hospital)
+	insertLocation(2,2,board,hospital)
 	insertLocation(1,2,board,home) # square for homes
 	insertLocation(3,1,board,home)
 	insertLocation(0,8,board,home)
@@ -36,6 +37,7 @@ def initBoard(rows,columns):
 
 def insertLocation(r,c,b,location):
 	b[r][c] = location
+
 
 def drawBoard(r,c,b):
 	for i in range(r):
@@ -72,44 +74,52 @@ def findIndex(r, c, target, state):
 	return hCoord
 
 def up(r, c, board):
-		# copy the state
-		arr = []
-		for li in board:
-			arr.append(list(li))
+	# copy the state
+	arr = []
+	for li in board:
+		arr.append(list(li))
 
-		if r > 0:
-			arr[r][c], arr[r-1][c] = arr[r-1][c], arr[r][c]
-			return arr
+	if r > 0:
+		if arr[r-1][c] == home or arr[r-1][c] ==hospital:
+			return None
+		arr[r][c], arr[r-1][c] = arr[r-1][c], arr[r][c]
+		return arr
 
 def down(r, c, board):
-		# copy the state
-		arr = []
-		for li in board:
-			arr.append(list(li))
-			
-		if r < rows-1:
-			arr[r][c], arr[r+1][c] = arr[r+1][c], arr[r][c]
-			return arr
+	# copy the state
+	arr = []
+	for li in board:
+		arr.append(list(li))
+
+	if r < rows-1:
+		if arr[r+1][c] == home or arr[r+1][c] == hospital:
+			return None
+		arr[r][c], arr[r+1][c] = arr[r+1][c], arr[r][c]
+		return arr
 
 def left(r, c, board):
-		# copy the state
-		arr = []
-		for li in board:
-			arr.append(list(li))
-			
-		if c > 0:
-			arr[r][c], arr[r][c-1] = arr[r][c-1], arr[r][c]
-			return arr
+	# copy the state
+	arr = []
+	for li in board:
+		arr.append(list(li))
+		
+	if c > 0:
+		if arr[r][c-1] == home or arr[r][c-1] == hospital:
+			return None
+		arr[r][c], arr[r][c-1] = arr[r][c-1], arr[r][c]
+		return arr
 
 def right(r, c, board):
-		# copy the state
-		arr = []
-		for li in board:
-			arr.append(list(li))
-			
-		if c < columns-1:
-			arr[r][c], arr[r][c+1] = arr[r][c+1], arr[r][c]
-			return arr
+	# copy the state
+	arr = []
+	for li in board:
+		arr.append(list(li))
+		
+	if c < columns-1:
+		if arr[r][c+1] == home or arr[r][c+1] == hospital:
+			return None
+		arr[r][c], arr[r][c+1] = arr[r][c+1], arr[r][c]
+		return arr
 
 # Find the possible next states and return a list of those states
 def possibleStates(board):
