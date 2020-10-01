@@ -15,9 +15,9 @@ def main():
 
 	# Loop to randomly put these locations
 	# initial locations for hospitals
-	# insertLocation(0,4,board,hospital) # H for hospitals
+	insertLocation(0,4,board,hospital) # H for hospitals
 	insertLocation(3,9,board,hospital)
-	insertLocation(2,2,board,hospital)
+	# insertLocation(2,2,board,hospital)
 	insertLocation(1,2,board,home) # square for homes
 	insertLocation(3,1,board,home)
 	insertLocation(0,8,board,home)
@@ -134,12 +134,17 @@ def possibleStates(board):
 		nextStates.append(left(r,c,board))
 		nextStates.append(right(r,c,board))
 	# filter out the Nones and return the list
-	return [i for i in nextStates if i]
+	nextStates = [i for i in nextStates if i]
+	states = []
+	for li in nextStates:
+		states.append((li, manhattan(li)))
+	# return [i for i in nextStates if i]
+	return states
 
 # Hill CLimbing with Random Restart
 def hcrr(rows,columns,board,numRestart):
-	min = math.inf # global maximum
-	manhDist = []
+	currentMin = math.inf
+	localMin = []
 	# copy the state
 	current = []
 	for li in board:
@@ -150,9 +155,21 @@ def hcrr(rows,columns,board,numRestart):
 		localMin = math.inf
 		nextStates = possibleStates(board)
 		for li in nextStates:
-			manhDist.append(manhattan(li))
-			drawBoard(rows,columns,li)
-		print(manhDist)
+			drawBoard(rows,columns,li[0])
+
+		# nextStates.sort()
+		for i in nextStates:
+			print(i[1])
+		print()
+
+
+		nextStates.sort(key=lambda x:x[1])
+		for i in nextStates:
+			print(i[1])
+
+		current = nextStates[0][0]
+		currentMin = nextStates[0][1]
+		print(f"localMin is {localMin}")
 
 		# if there is no minimum value lower than global min break
 
