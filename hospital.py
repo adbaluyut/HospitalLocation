@@ -1,5 +1,6 @@
 
 import math
+import random
 
 # rows = int(input("Input number of rows:\n"))
 # columns = int(input("Input number of columns:\n"))
@@ -13,19 +14,21 @@ hospital = 'H'
 def main():
 	board = initBoard(rows,columns)    
 
-	# Loop to randomly put these locations
 	# initial locations for hospitals
+	insertHomes(board)
+	
 	insertLocation(0,4,board,hospital) # H for hospitals
 	insertLocation(3,9,board,hospital)
+	# insertHospitals(board)
 	# insertLocation(2,2,board,hospital)
-	insertLocation(1,2,board,home) # square for homes
-	insertLocation(3,1,board,home)
-	insertLocation(0,8,board,home)
-	insertLocation(4,6,board,home)
+	# insertLocation(1,2,board,home) # square for homes
+	# insertLocation(3,1,board,home)
+	# insertLocation(0,8,board,home)
+	# insertLocation(4,6,board,home)
 
 	drawBoard(rows, columns, board)
-	hcrr(rows,columns,board,3)
-	# manhattan(board)
+	board = hcrr(rows,columns,board)
+	drawBoard(rows, columns, board)
 
 def initBoard(rows,columns):
 	board = []
@@ -34,6 +37,38 @@ def initBoard(rows,columns):
 		for j in range(columns):
 			board[i].append('o')
 	return board
+
+
+# randomly insert 2 hospitals in the board
+def insertHospitals(board):
+	count = 0
+
+	while count < 2:
+		
+		r = random.randint(0,rows - 1)
+		c = random.randint(0,columns - 1)
+		
+		if board [r][c] == 'o':
+			insertLocation(r,c,board,hospital)
+			count += 1
+
+
+def removeHospitals(board):
+
+	for i in range(rows): 			
+		for j in range(columns):
+			if board [i][j] == hospital:
+				insertLocation(i,j,board,'o')
+
+
+def insertHomes(board):
+	homes = 0
+	while homes < numHouses:
+		r = random.randint(0,rows - 1)
+		c = random.randint(0,columns - 1)
+		if board [r][c] == 'o':
+			insertLocation(r,c,board,home)
+			homes+=1
 
 def insertLocation(r,c,b,location):
 	b[r][c] = location
@@ -50,8 +85,6 @@ def manhattan(state):
 	distances = []
 	homeLoc = findIndex(rows,columns,home,state)
 	hospitalLoc = findIndex(rows,columns,hospital,state)
-	# print(homeLoc)
-	# print(hospitalLoc)
 	
 	for r,c in homeLoc:
 		localDist = math.inf
@@ -60,8 +93,6 @@ def manhattan(state):
 			if dist < localDist:
 				localDist = dist
 		distances.append(localDist)
-	# print(distances)
-	# print(f"sum = {sum(distances)}")
 	return sum(distances)
 	 
 # return a list of tuples containing the coordinates of the targets
@@ -125,10 +156,8 @@ def right(r, c, board):
 def possibleStates(board):
 	nextStates = []
 	hospitalLoc = findIndex(rows,columns,hospital,board)
-	print(hospitalLoc)
 	# At each hospital location get the next possible moves
 	for r,c in hospitalLoc:
-		# print(f"{board[r][c]} at ({r},{c})")
 		nextStates.append(up(r,c,board))
 		nextStates.append(down(r,c,board))
 		nextStates.append(left(r,c,board))
@@ -138,42 +167,49 @@ def possibleStates(board):
 	states = []
 	for li in nextStates:
 		states.append((li, manhattan(li)))
-	# return [i for i in nextStates if i]
 	return states
 
 # Hill CLimbing with Random Restart
-def hcrr(rows,columns,board,numRestart):
-	currentMin = math.inf
+def hcrr(rows,columns,board): 
+	globalMin = math.inf
 	localMin = []
+	localStates = []
+	currentMin = math.inf
+	cmin = ([],math.inf)
+	restart = 0
+
 	# copy the state
 	current = []
 	for li in board:
 		current.append(list(li))
-	restart = 0
 
-	while(True):
-		localMin = math.inf
-		nextStates = possibleStates(board)
-		for li in nextStates:
-			drawBoard(rows,columns,li[0])
-
-		# nextStates.sort()
-		for i in nextStates:
-			print(i[1])
-		print()
-
+	while(restart < 10):
+		nextStates = possibleStates(current)
+		# for li in nextStates:
+		# 	drawBoard(rows,columns,li[0])
+		# 	print(li[1])
 
 		nextStates.sort(key=lambda x:x[1])
-		for i in nextStates:
-			print(i[1])
-
+		
+		# the first state in the sorted list is the new current
 		current = nextStates[0][0]
-		currentMin = nextStates[0][1]
-		print(f"localMin is {localMin}")
 
 		# if there is no minimum value lower than global min break
 
-		break
+		if nextStates[0][1] < currentMin:
+			currentMin = nextStates[0][1]
+			cmin = nextStates[0]
+		else:
+			localMin.append(currentMin)
+			localStates.append(cmin)
+			restart += 1
+			# generate new location for hospitals
+			removeHospitals(current)
+			insertHospitals(current)
+
+	localStates.sort(key=lambda x:x[1])
+	
+	return localStates[0][0]	
 
 if __name__ == "__main__":
 	main()
