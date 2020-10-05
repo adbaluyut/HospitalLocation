@@ -24,10 +24,10 @@ def main():
 
     print("Starting Hill CLimbing with Random Restart\n")
     # drawBoard(board)
-    print(f"The initial manhattan distance is {manhattan(board)}\n")
-    board = hcrr(rows,columns,board)
+    print(f"The initial manhattan distance is {manhattan(hcrrboard)}\n")
+    hcrrboard = hcrr(rows,columns,board)
     # drawBoard(board[0])
-    print(f"The final manhattan distance is {board[1]}\n")
+    print(f"The final manhattan distance is {hcrrboard[1]}\n")
 
     print("Starting Simulated Annealing\n")
     # drawBoard(saboard)
