@@ -7,90 +7,37 @@ import random
 # rows = int(input("Input number of rows:\n"))
 # columns = int(input("Input number of columns:\n"))
 # numHouses = int(input("Input number of houses:\n"))
-rows = 20
-columns = 20
-numHouses = 50
+rows = 100
+columns = 100
+numHouses = 2000
 home = '\u25A2'
 hospital = 'H'
 
 def main():
     board = initBoard()    
-
+    runs = 1
     # randomly insert homes and hospitals
     insertHomes(board) # squares = home
     insertHospitals(board) # H = hospitals
-    hcrrboard1 = copy.deepcopy(board)
-    saboard1 = copy.deepcopy(board)
-    hcrrboard2 = copy.deepcopy(board)
-    saboard2 = copy.deepcopy(board)
-    hcrrboard3 = copy.deepcopy(board)
-    saboard3 = copy.deepcopy(board)
-    hcrrboard4 = copy.deepcopy(board)
-    saboard4 = copy.deepcopy(board)
+    while runs <= 4:
+        print(f"------------------------------------------------------------\nRunning test {runs}")
+        hcrrboard = copy.deepcopy(board)
+        saboard = copy.deepcopy(board)
 
-    print("Running test1")
-    print("Starting Hill CLimbing with Random Restart\n")
-    # drawBoard(board)
-    print(f"The initial manhattan distance is {manhattan(hcrrboard1)}\n")
-    hcrrboard1 = hcrr(rows,columns,board)
-    # drawBoard(board[0])
-    print(f"The final manhattan distance is {hcrrboard1[1]}\n")
+        print("Starting Hill CLimbing with Random Restart\n")
+        # drawBoard(board)
+        print(f"The initial manhattan distance is {manhattan(hcrrboard)}\n")
+        hcrrboard = hcrr(rows,columns,board)
+        # drawBoard(board[0])
+        print(f"The final manhattan distance is {hcrrboard[1]}\n")
 
-    print("Starting Simulated Annealing\n")
-    # drawBoard(saboard)
-    print(f"The initial manhattan distance is {manhattan(saboard1)}\n")
-    solution1 = sa(saboard1)
-    # drawBoard(solution[0])
-    print(f"The final manhattan distance is {solution1[1]}\n")
-
-
-    print("Running test2")
-    print("Starting Hill CLimbing with Random Restart\n")
-    # drawBoard(board)
-    print(f"The initial manhattan distance is {manhattan(board)}\n")
-    board = hcrr(rows,columns,board)
-    # drawBoard(board[0])
-    print(f"The final manhattan distance is {board[1]}\n")
-
-    print("Starting Simulated Annealing\n")
-    # drawBoard(saboard)
-    print(f"The initial manhattan distance is {manhattan(saboard)}\n")
-    solution = sa(saboard)
-    # drawBoard(solution[0])
-    print(f"The final manhattan distance is {solution[1]}\n")
-
-
-    print("Running test3")
-    print("Starting Hill CLimbing with Random Restart\n")
-    # drawBoard(board)
-    print(f"The initial manhattan distance is {manhattan(board)}\n")
-    board = hcrr(rows,columns,board)
-    # drawBoard(board[0])
-    print(f"The final manhattan distance is {board[1]}\n")
-
-    print("Starting Simulated Annealing\n")
-    # drawBoard(saboard)
-    print(f"The initial manhattan distance is {manhattan(saboard)}\n")
-    solution = sa(saboard)
-    # drawBoard(solution[0])
-    print(f"The final manhattan distance is {solution[1]}\n")
-
-
-    print("Running test4")
-    print("Starting Hill CLimbing with Random Restart\n")
-    # drawBoard(board)
-    print(f"The initial manhattan distance is {manhattan(board)}\n")
-    board = hcrr(rows,columns,board)
-    # drawBoard(board[0])
-    print(f"The final manhattan distance is {board[1]}\n")
-
-    print("Starting Simulated Annealing\n")
-    # drawBoard(saboard)
-    print(f"The initial manhattan distance is {manhattan(saboard)}\n")
-    solution = sa(saboard)
-    # drawBoard(solution[0])
-    print(f"The final manhattan distance is {solution[1]}\n")
-
+        print("Starting Simulated Annealing\n")
+        # drawBoard(saboard)
+        # print(f"The initial manhattan distance is {manhattan(saboard)}\n")
+        solution = sa(saboard)
+        # drawBoard(solution[0])
+        print(f"The final manhattan distance is {solution[1]}\n")
+        runs += 1
 
 def initBoard():
     board = []
@@ -319,7 +266,7 @@ def sa(board):
         
         curTemp -= alpha
     
-    print(f"The number of configurations evaluated: {statesEvaluated}")
+    # print(f"The number of configurations evaluated: {statesEvaluated}")
         
     return solution
     
