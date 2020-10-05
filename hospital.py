@@ -4,12 +4,9 @@ import math
 import random
 
 
-# rows = int(input("Input number of rows:\n"))
-# columns = int(input("Input number of columns:\n"))
-# numHouses = int(input("Input number of houses:\n"))
-rows = 20
-columns = 20
-numHouses = 50
+rows = int(input("Input number of rows:\n"))
+columns = int(input("Input number of columns:\n"))
+numHouses = int(input("Input number of houses:\n"))
 home = '\u25A2'
 hospital = 'H'
 
