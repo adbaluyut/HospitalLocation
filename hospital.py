@@ -4,33 +4,36 @@ import math
 import random
 
 
-rows = int(input("Input number of rows:\n"))
-columns = int(input("Input number of columns:\n"))
-numHouses = int(input("Input number of houses:\n"))
+# rows = int(input("Input number of rows:\n"))
+# columns = int(input("Input number of columns:\n"))
+# numHouses = int(input("Input number of houses:\n"))
+rows = 20
+columns = 20
+numHouses = 50
 home = '\u25A2'
 hospital = 'H'
 
 def main():
     board = initBoard()    
-    # saboard = initBoard()
 
     # randomly insert homes and hospitals
     insertHomes(board) # squares = home
     insertHospitals(board) # H = hospitals
+    hcrrboard = copy.deepcopy(board)
     saboard = copy.deepcopy(board)
 
     print("Starting Hill CLimbing with Random Restart\n")
-    drawBoard(board)
+    # drawBoard(board)
     print(f"The initial manhattan distance is {manhattan(board)}\n")
     board = hcrr(rows,columns,board)
-    drawBoard(board[0])
+    # drawBoard(board[0])
     print(f"The final manhattan distance is {board[1]}\n")
 
     print("Starting Simulated Annealing\n")
-    drawBoard(saboard)
+    # drawBoard(saboard)
     print(f"The initial manhattan distance is {manhattan(saboard)}\n")
     solution = sa(saboard)
-    drawBoard(solution[0])
+    # drawBoard(solution[0])
     print(f"The final manhattan distance is {solution[1]}\n")
 
 def initBoard():
@@ -188,11 +191,12 @@ def possibleStates(board):
 
 # Hill CLimbing with Random Restart
 def hcrr(rows,columns,board): 
+    statesEvaluated = 0
     localMin = []
     currentMin = math.inf
     cmin = ([],math.inf)
     restart = 0
-
+    count = 1
     # copy the state
     current = []
     for li in board:
@@ -200,9 +204,10 @@ def hcrr(rows,columns,board):
 
     while(restart < 10):
         nextStates = possibleStates(current)
+        statesEvaluated += len(nextStates)
         # uncomment to see the next states being computed
         # for li in nextStates:
-        # 	drawBoard(rows,columns,li[0])
+        # 	drawBoard(li[0])
 
         nextStates.sort(key=lambda x:x[1])
         
@@ -220,10 +225,13 @@ def hcrr(rows,columns,board):
             insertHospitals(current)
 
     localMin.sort(key=lambda x:x[1])
+
+    print(f"The number of configurations evaluated: {statesEvaluated}")
     
     return localMin[0]
 
 def sa(board):
+    statesEvaluated = 0
     initTemp = 100
     finalTemp = 0.1
     alpha = .01
@@ -246,6 +254,7 @@ def sa(board):
         # print(f"Current T: {curTemp}")
 
         diffCost = curState[1] - nextState[1]
+        statesEvaluated += 1
 
         if diffCost > 0:
             solution = nextState
@@ -253,6 +262,8 @@ def sa(board):
             solution = nextState
         
         curTemp -= alpha
+    
+    print(f"The number of configurations evaluated: {statesEvaluated}")
         
     return solution
     
